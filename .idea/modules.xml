@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/BridgeCam.iml" filepath="$PROJECT_DIR$/.idea/BridgeCam.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BridgeCam.main.iml" filepath="$PROJECT_DIR$/.idea/modules/BridgeCam.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BridgeCam.test.iml" filepath="$PROJECT_DIR$/.idea/modules/BridgeCam.test.iml" />
     </modules>
   </component>
 </project>
