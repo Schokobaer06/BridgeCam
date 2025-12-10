@@ -1,3 +1,4 @@
 {
-  "block.bridgecam.monitor": "Monitor"
+  "block.bridgecam.monitor": "Monitor",
+  "itemGroup.bridgecam.tab": "BridgeCam"
 }
