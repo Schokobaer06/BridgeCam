@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "bridgecam:block/monitor"
+    }
+  }
+}
