@@ -1,6 +1,7 @@
 package com.schokobaer06.bridgecam;
 
 import com.schokobaer06.bridgecam.init.InitBlocks;
+import com.schokobaer06.bridgecam.init.InitItems;
 import com.schokobaer06.bridgecam.init.InitTabs;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -14,7 +15,8 @@ public class BridgeCam {
     public BridgeCam() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.register(this);
-        InitBlocks.register(bus);
+        InitBlocks.BLOCKS.register(bus);
+        InitItems.ITEMS.register(bus);
         InitTabs.CREATIVE_MODE_TABS.register(bus);
     }
 }

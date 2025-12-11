@@ -15,22 +15,10 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class InitBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, BridgeCam.MOD_ID);
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, BridgeCam.MOD_ID);
-
     // Monitor Block registrieren
     public static final RegistryObject<Block> MONITOR_BLOCK = BLOCKS.register("monitor",
             () -> new MonitorBlock(BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.COLOR_BLACK)
+                    .mapColor(MapColor.METAL)
                     .strength(1.5f, 6.0f)
-                    .noOcclusion()// Wichtig für transparente/teilweise Blöcke
             ));
-
-    // Item für den Monitor Block
-    public static final RegistryObject<Item> MONITOR_BLOCK_ITEM = ITEMS.register("monitor",
-            () -> new BlockItem(MONITOR_BLOCK.get(), new Item.Properties()
-                    ));
-    public static void register(IEventBus eventBus) {
-        BLOCKS.register(eventBus);
-        ITEMS.register(eventBus);
-    }
 }
