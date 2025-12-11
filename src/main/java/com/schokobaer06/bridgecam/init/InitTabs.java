@@ -15,7 +15,7 @@ public class InitTabs {
                     .title(Component.translatable("itemGroup.bridgecam.tab"))
                     .icon(() -> new ItemStack(InitBlocks.MONITOR_BLOCK.get()))
                     .displayItems((parameters, tabData) -> {
-                        InitBlocks.ITEMS.getEntries().forEach(
+                        InitItems.ITEMS.getEntries().forEach(
                                 itemRegistryObject -> tabData.accept(itemRegistryObject.get())
                         );
                     })
