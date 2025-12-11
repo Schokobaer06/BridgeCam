@@ -13,5 +13,6 @@ Designed for:
 - Low-latency client-side rendering
 - Valkyrien Skies compatibility
 
-## Status
-🚧 Early development
+## Credits
+
+>[**Santoniche**](https://opengameart.org/users/santoniche) : [Wrench texture](https://opengameart.org/content/wrench-0)
