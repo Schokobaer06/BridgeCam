@@ -1,4 +1,5 @@
 {
   "block.bridgecam.monitor": "Monitor",
-  "itemGroup.bridgecam.tab": "BridgeCam"
+  "itemGroup.bridgecam.tab": "BridgeCam",
+  "item.bridgecam.wrench": "Wrench"
 }

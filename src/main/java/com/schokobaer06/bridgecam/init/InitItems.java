@@ -15,4 +15,9 @@ public class InitItems {
     public static final RegistryObject<Item> MONITOR_BLOCK_ITEM = ITEMS.register("monitor",
             () -> new BlockItem(MONITOR_BLOCK.get(), new Item.Properties()
             ));
+
+    public static final RegistryObject<Item> WRENCH_ITEM = ITEMS.register("wrench",
+            () -> new com.schokobaer06.bridgecam.item.WrenchItem(new Item.Properties()
+                    .stacksTo(1)
+            ));
 }
