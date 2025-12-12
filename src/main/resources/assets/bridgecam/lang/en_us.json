@@ -1,5 +1,6 @@
 {
   "block.bridgecam.monitor": "Monitor",
+  "block.bridgecam.simple_camera": "Simple Camera",
   "itemGroup.bridgecam.tab": "BridgeCam",
   "item.bridgecam.wrench": "Wrench"
 }
