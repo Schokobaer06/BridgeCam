@@ -1,33 +1,118 @@
 {
   "variants": {
-    "facing=down,rotation=0": { "model": "bridgecam:block/camera", "x": 180 },
-    "facing=down,rotation=1": { "model": "bridgecam:block/camera", "x": 180, "y": 90 },
-    "facing=down,rotation=2": { "model": "bridgecam:block/camera", "x": 180, "y": 180 },
-    "facing=down,rotation=3": { "model": "bridgecam:block/camera", "x": 180, "y": 270 },
-
-    "facing=up,rotation=0": { "model": "bridgecam:block/camera" },
-    "facing=up,rotation=1": { "model": "bridgecam:block/camera", "y": 90 },
-    "facing=up,rotation=2": { "model": "bridgecam:block/camera", "y": 180 },
-    "facing=up,rotation=3": { "model": "bridgecam:block/camera", "y": 270 },
-
-    "facing=north,rotation=0": { "model": "bridgecam:block/camera", "x": 90 },
-    "facing=north,rotation=1": { "model": "bridgecam:block/camera", "x": 90, "y": 90 },
-    "facing=north,rotation=2": { "model": "bridgecam:block/camera", "x": 90, "y": 180 },
-    "facing=north,rotation=3": { "model": "bridgecam:block/camera", "x": 90, "y": 270 },
-
-    "facing=south,rotation=0": { "model": "bridgecam:block/camera", "x": 90, "y": 180 },
-    "facing=south,rotation=1": { "model": "bridgecam:block/camera", "x": 90, "y": 270 },
-    "facing=south,rotation=2": { "model": "bridgecam:block/camera", "x": 90, "y": 0 },
-    "facing=south,rotation=3": { "model": "bridgecam:block/camera", "x": 90, "y": 90 },
-
-    "facing=west,rotation=0": { "model": "bridgecam:block/camera", "x": 90, "y": 270 },
-    "facing=west,rotation=1": { "model": "bridgecam:block/camera", "x": 90, "y": 0 },
-    "facing=west,rotation=2": { "model": "bridgecam:block/camera", "x": 90, "y": 90 },
-    "facing=west,rotation=3": { "model": "bridgecam:block/camera", "x": 90, "y": 180 },
-
-    "facing=east,rotation=0": { "model": "bridgecam:block/camera", "x": 90, "y": 90 },
-    "facing=east,rotation=1": { "model": "bridgecam:block/camera", "x": 90, "y": 180 },
-    "facing=east,rotation=2": { "model": "bridgecam:block/camera", "x": 90, "y": 270 },
-    "facing=east,rotation=3": { "model": "bridgecam:block/camera", "x": 90, "y": 0 }
+    "facing=down,rotation=0": {
+      "model": "bridgecam:block/simple_camera",
+      "x": 180
+    },
+    "facing=down,rotation=1": {
+      "model": "bridgecam:block/simple_camera",
+      "x": 180,
+      "y": 90
+    },
+    "facing=down,rotation=2": {
+      "model": "bridgecam:block/simple_camera",
+      "x": 180,
+      "y": 180
+    },
+    "facing=down,rotation=3": {
+      "model": "bridgecam:block/simple_camera",
+      "x": 180,
+      "y": 270
+    },
+    "facing=up,rotation=0": {
+      "model": "bridgecam:block/simple_camera"
+    },
+    "facing=up,rotation=1": {
+      "model": "bridgecam:block/simple_camera",
+      "y": 90
+    },
+    "facing=up,rotation=2": {
+      "model": "bridgecam:block/simple_camera",
+      "y": 180
+    },
+    "facing=up,rotation=3": {
+      "model": "bridgecam:block/simple_camera",
+      "y": 270
+    },
+    "facing=north,rotation=0": {
+      "model": "bridgecam:block/simple_camera",
+      "z": 90,
+      "y": 180
+    },
+    "facing=north,rotation=1": {
+      "model": "bridgecam:block/simple_camera",
+      "z": 90,
+      "y": 270
+    },
+    "facing=north,rotation=2": {
+      "model": "bridgecam:block/simple_camera",
+      "z": 90,
+      "y": 0
+    },
+    "facing=north,rotation=3": {
+      "model": "bridgecam:block/simple_camera",
+      "z": 90,
+      "y": 90
+    },
+    "facing=south,rotation=0": {
+      "model": "bridgecam:block/simple_camera",
+      "z": 90,
+      "y": 0
+    },
+    "facing=south,rotation=1": {
+      "model": "bridgecam:block/simple_camera",
+      "z": 90,
+      "y": 90
+    },
+    "facing=south,rotation=2": {
+      "model": "bridgecam:block/simple_camera",
+      "z": 90,
+      "y": 180
+    },
+    "facing=south,rotation=3": {
+      "model": "bridgecam:block/simple_camera",
+      "z": 90,
+      "y": 270
+    },
+    "facing=west,rotation=0": {
+      "model": "bridgecam:block/simple_camera",
+      "z": 90,
+      "y": 90
+    },
+    "facing=west,rotation=1": {
+      "model": "bridgecam:block/simple_camera",
+      "z": 90,
+      "y": 180
+    },
+    "facing=west,rotation=2": {
+      "model": "bridgecam:block/simple_camera",
+      "z": 90,
+      "y": 270
+    },
+    "facing=west,rotation=3": {
+      "model": "bridgecam:block/simple_camera",
+      "z": 90,
+      "y": 0
+    },
+    "facing=east,rotation=0": {
+      "model": "bridgecam:block/simple_camera",
+      "z": 90,
+      "y": 270
+    },
+    "facing=east,rotation=1": {
+      "model": "bridgecam:block/simple_camera",
+      "z": 90,
+      "y": 0
+    },
+    "facing=east,rotation=2": {
+      "model": "bridgecam:block/simple_camera",
+      "z": 90,
+      "y": 90
+    },
+    "facing=east,rotation=3": {
+      "model": "bridgecam:block/simple_camera",
+      "z": 90,
+      "y": 180
+    }
   }
 }

@@ -10,6 +10,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class SimpleCameraBlock extends Block {
@@ -42,9 +45,7 @@ public class SimpleCameraBlock extends Block {
     }
 
     private int getRotationFromDirection(Direction playerHorizontalDir, Direction blockFacing) {
-        // Wenn der Block an Wand, Decke oder Boden hängt, brauchen wir unterschiedliche Rotation-Logik
-        if (blockFacing == Direction.UP || blockFacing == Direction.DOWN) {
-            // Block an Decke oder Boden: Rotation basierend auf Spielerrichtung
+        if (blockFacing == Direction.UP) {
             return switch (playerHorizontalDir) {
                 case NORTH -> 0;
                 case EAST -> 1;
@@ -52,13 +53,25 @@ public class SimpleCameraBlock extends Block {
                 case WEST -> 3;
                 default -> 0;
             };
+        } else if (blockFacing == Direction.DOWN) {
+            return switch (playerHorizontalDir) {
+                case NORTH -> 2;
+                case EAST -> 3;
+                case SOUTH -> 0;
+                case WEST -> 1;
+                default -> 0;
+            };
         } else {
-            // Block an Wand: Rotation relativ zur Wand
-            // Hier könnte komplexere Logik stehen, je nach gewünschtem Verhalten
-            return 0; // Einfachheitshalber erstmal 0
+            // Für Wände: Rotation basierend auf Spieler-Blickrichtung relativ zur Wand
+            // Dies bestimmt, wohin die Kamera an der Wand schaut
+            Direction oppositeWall = blockFacing.getOpposite();
+            if (playerHorizontalDir == oppositeWall) return 0; // Von Wand weg
+            if (playerHorizontalDir == oppositeWall.getClockWise()) return 1; // Rechts
+            if (playerHorizontalDir == blockFacing) return 2; // In die Wand
+            if (playerHorizontalDir == oppositeWall.getCounterClockWise()) return 3; // Links
+            return 0;
         }
     }
-
     @Override
     public BlockState rotate(BlockState state, Rotation rot) {
         // Rotation mit Rechtsklick (ohne Schraubenzieher)
@@ -69,12 +82,64 @@ public class SimpleCameraBlock extends Block {
     public BlockState mirror(BlockState state, Mirror mirror) {
         // Für Spiegelung (optional)
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
+
     }
 
     @Override
     public boolean useShapeForLightOcclusion(BlockState state) {
         return true;
     }
+
+    private VoxelShape makeShape() {
+        VoxelShape shape = Shapes.empty();
+        shape = Shapes.join(shape, Shapes.box(0.3125, 0.0625, 0.125, 0.6875, 0.4375, 0.875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.5625, 0, 0.3125, 0.5625, 0.0625, 0.8125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.4375, 0, 0.8125, 0.5625, 0.0625, 0.8125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.4375, 0, 0.3125, 0.5625, 0.0625, 0.3125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.4375, 0, 0.3125, 0.4375, 0.0625, 0.8125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.375, 0, 0.3125, 0.625, 0, 0.8125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.4375, 0.1875, 0.11875, 0.5625, 0.3125, 0.11875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.5625, 0.3125, 0.09375, 0.59375, 0.40625, 0.09375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.40625, 0.3125, 0.09375, 0.4375, 0.40625, 0.09375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.5625, 0.3125, 0.09375, 0.65625, 0.34375, 0.09375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.5625, 0.1875, 0.09375, 0.6875, 0.3125, 0.09375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.3125, 0.1875, 0.09375, 0.4375, 0.3125, 0.09375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.34375, 0.3125, 0.09375, 0.4375, 0.34375, 0.09375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.34375, 0.15625, 0.09375, 0.4375, 0.1875, 0.09375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.5625, 0.15625, 0.09375, 0.65625, 0.1875, 0.09375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.4375, 0.0625, 0.09375, 0.5625, 0.1875, 0.09375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.5625, 0.09375, 0.09375, 0.59375, 0.1875, 0.09375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.40625, 0.09375, 0.09375, 0.4375, 0.1875, 0.09375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.4375, 0.3125, 0.09375, 0.5625, 0.4375, 0.09375), BooleanOp.OR);
+
+        return shape;
+    }
+/*
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        VoxelShape shape = makeShape();
+        Direction facing = state.getValue(FACING);
+
+        // Rotiere VoxelShape basierend auf FACING
+        switch (facing) {
+            case UP:
+                return shape; // Normal
+            case DOWN:
+                return rotateShape(shape, Rotation.CLOCKWISE_180); // Um 180° um X
+            case NORTH, WEST:
+                return rotateShape(shape, Rotation.CLOCKWISE_90); // Um 90° um Z
+            case SOUTH, EAST:
+                return rotateShape(shape, Rotation.COUNTERCLOCKWISE_90); // Um -90° um Z
+            default:
+                return shape;
+        }
+    }
+
+    private VoxelShape rotateShape(VoxelShape shape, Rotation rotation) {
+        // Einfache Rotation um Y-Achse (für horizontale Ausrichtung an Wänden)
+        // Für komplexere Rotationen müsstest du alle Shapes.box() einzeln transformieren
+        return shape;
+    }*/
 
     // Hilfsmethode für später: Richtungsvektor der Kamera berechnen
     public static Direction getCameraDirection(BlockState state) {

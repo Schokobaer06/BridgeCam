@@ -2,6 +2,7 @@ package com.schokobaer06.bridgecam.init;
 
 import com.schokobaer06.bridgecam.BridgeCam;
 import com.schokobaer06.bridgecam.block.MonitorBlock;
+import com.schokobaer06.bridgecam.block.SimpleCameraBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -20,7 +21,7 @@ public class InitBlocks {
                     .strength(1.5f, 6.0f)
             ));
     public static final RegistryObject<Block> SIMPLE_CAMERA_BLOCK = BLOCKS.register("simple_camera",
-            () -> new MonitorBlock(BlockBehaviour.Properties.of()
+            () -> new SimpleCameraBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_GRAY)
                     .strength(0.5f, 1.0f)
                     .noOcclusion()
