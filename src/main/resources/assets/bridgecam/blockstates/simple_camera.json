@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "bridgecam:block/simple_camera",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "bridgecam:block/simple_camera",
+      "y": 0
+    },
+    "facing=west": {
+      "model": "bridgecam:block/simple_camera",
+      "y": 90
+    },
+    "facing=east": {
+      "model": "bridgecam:block/simple_camera",
+      "y": 270
+    }
+  }
+}
