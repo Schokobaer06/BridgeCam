@@ -1,21 +1,35 @@
 package com.schokobaer06.bridgecam.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 
-public class MonitorBlock extends Block {
+public class MonitorBlock extends HorizontalDirectionalBlock {
+    // FACING property für horizontale Richtungen
+    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+
+    // VoxelShape als Konstante (kannst du auch in makeShape() lassen)
+    private static final VoxelShape SHAPE = makeShape();
 
     public MonitorBlock(Properties properties) {
         super(properties);
+        // Standardzustand: nach Norden schauend
+        this.registerDefaultState(this.stateDefinition.any()
+                .setValue(FACING, Direction.NORTH));
     }
 
-    private VoxelShape makeShape(){
+    private static VoxelShape makeShape() {
         VoxelShape shape = Shapes.empty();
         shape = Shapes.join(shape, Shapes.box(0, 0, 0.125, 1, 1, 1), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(0, 0, 0, 1, 0.0625, 0.125), BooleanOp.OR);
@@ -26,14 +40,29 @@ public class MonitorBlock extends Block {
         shape = Shapes.join(shape, Shapes.box(0.0625, 0.875, 0.0625, 0.9375, 0.9375, 0.125), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(0.0625, 0.125, 0.0625, 0.125, 0.875, 0.125), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(0.875, 0.125, 0.0625, 0.9375, 0.875, 0.125), BooleanOp.OR);
-
         return shape;
     }
 
     @Override
-    public VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
-        return makeShape();
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
     }
 
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        // Block wird in die entgegengesetzte Richtung des Spielers platziert
+        return this.defaultBlockState()
+                .setValue(FACING, context.getHorizontalDirection().getOpposite());
+    }
 
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
+    }
+
+    @Override
+    public boolean useShapeForLightOcclusion(BlockState state) {
+        return true;
+    }
 }

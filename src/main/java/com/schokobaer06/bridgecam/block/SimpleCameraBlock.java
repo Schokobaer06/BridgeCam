@@ -1,96 +1,42 @@
 package com.schokobaer06.bridgecam.block;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.Nullable;
 
-public class SimpleCameraBlock extends Block {
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
-    public static final IntegerProperty ROTATION = IntegerProperty.create("rotation", 0, 3);
+import java.util.HashMap;
+import java.util.Map;
+
+public class SimpleCameraBlock extends HorizontalDirectionalBlock {
+    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    private static final Map<Direction, VoxelShape> SHAPES = new HashMap<>();
+
+    static {
+        // Basis-Shape für NORTH (deine ursprüngliche Form)
+        VoxelShape baseShape = makeBaseShape();
+
+        // Für jede Richtung die passende Rotation berechnen
+        for (Direction direction : Direction.Plane.HORIZONTAL) {
+            SHAPES.put(direction, rotateShape(baseShape, direction));
+        }
+    }
 
     public SimpleCameraBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.getStateDefinition().any()
-                .setValue(FACING, Direction.NORTH)
-                .setValue(ROTATION, 0)
-        );
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, ROTATION);
-    }
-
-    @Override
-    public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
-        Direction facing = context.getClickedFace();
-
-        Direction horizontalDirection = context.getHorizontalDirection();
-        int rotation = getRotationFromDirection(horizontalDirection, facing);
-
-        return this.defaultBlockState()
-                .setValue(FACING, facing)
-                .setValue(ROTATION, rotation);
-    }
-
-    private int getRotationFromDirection(Direction playerHorizontalDir, Direction blockFacing) {
-        if (blockFacing == Direction.UP) {
-            return switch (playerHorizontalDir) {
-                case NORTH -> 0;
-                case EAST -> 1;
-                case SOUTH -> 2;
-                case WEST -> 3;
-                default -> 0;
-            };
-        } else if (blockFacing == Direction.DOWN) {
-            return switch (playerHorizontalDir) {
-                case NORTH -> 2;
-                case EAST -> 3;
-                case SOUTH -> 0;
-                case WEST -> 1;
-                default -> 0;
-            };
-        } else {
-            // Für Wände: Rotation basierend auf Spieler-Blickrichtung relativ zur Wand
-            // Dies bestimmt, wohin die Kamera an der Wand schaut
-            Direction oppositeWall = blockFacing.getOpposite();
-            if (playerHorizontalDir == oppositeWall) return 0; // Von Wand weg
-            if (playerHorizontalDir == oppositeWall.getClockWise()) return 1; // Rechts
-            if (playerHorizontalDir == blockFacing) return 2; // In die Wand
-            if (playerHorizontalDir == oppositeWall.getCounterClockWise()) return 3; // Links
-            return 0;
-        }
-    }
-    @Override
-    public BlockState rotate(BlockState state, Rotation rot) {
-        // Rotation mit Rechtsklick (ohne Schraubenzieher)
-        return state.setValue(ROTATION, (state.getValue(ROTATION) + 1) % 4);
-    }
-
-    @Override
-    public BlockState mirror(BlockState state, Mirror mirror) {
-        // Für Spiegelung (optional)
-        return state.rotate(mirror.getRotation(state.getValue(FACING)));
-
-    }
-
-    @Override
-    public boolean useShapeForLightOcclusion(BlockState state) {
-        return true;
-    }
-
-    private VoxelShape makeShape() {
+    private static VoxelShape makeBaseShape() {
         VoxelShape shape = Shapes.empty();
         shape = Shapes.join(shape, Shapes.box(0.3125, 0.0625, 0.125, 0.6875, 0.4375, 0.875), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(0.5625, 0, 0.3125, 0.5625, 0.0625, 0.8125), BooleanOp.OR);
@@ -114,63 +60,71 @@ public class SimpleCameraBlock extends Block {
 
         return shape;
     }
-/*
-    @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        VoxelShape shape = makeShape();
-        Direction facing = state.getValue(FACING);
 
-        // Rotiere VoxelShape basierend auf FACING
-        switch (facing) {
-            case UP:
-                return shape; // Normal
-            case DOWN:
-                return rotateShape(shape, Rotation.CLOCKWISE_180); // Um 180° um X
-            case NORTH, WEST:
-                return rotateShape(shape, Rotation.CLOCKWISE_90); // Um 90° um Z
-            case SOUTH, EAST:
-                return rotateShape(shape, Rotation.COUNTERCLOCKWISE_90); // Um -90° um Z
-            default:
-                return shape;
-        }
+    private static VoxelShape rotateShape(VoxelShape shape, Direction direction) {
+        // Deine Shape ist für FACING=NORTH definiert
+        // Wir rotieren sie basierend auf der gewünschten Richtung
+        return switch (direction) {
+            case NORTH -> shape; // Original
+            case SOUTH -> rotateShape(shape, 180);
+            case WEST -> rotateShape(shape, 90);
+            case EAST -> rotateShape(shape, 270);
+            default -> shape;
+        };
     }
 
-    private VoxelShape rotateShape(VoxelShape shape, Rotation rotation) {
-        // Einfache Rotation um Y-Achse (für horizontale Ausrichtung an Wänden)
-        // Für komplexere Rotationen müsstest du alle Shapes.box() einzeln transformieren
-        return shape;
-    }*/
+    private static VoxelShape rotateShape(VoxelShape shape, int degrees) {
+        // Einfache 2D-Rotation um die Y-Achse für die Hitbox
+        VoxelShape[] result = new VoxelShape[]{Shapes.empty()};
 
-    // Hilfsmethode für später: Richtungsvektor der Kamera berechnen
-    public static Direction getCameraDirection(BlockState state) {
-        Direction facing = state.getValue(FACING);
-        int rotation = state.getValue(ROTATION);
+        shape.forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> {
+            // Rotiere die Box-Koordinaten
+            double[] rotatedMin = rotatePoint(minX - 0.5, minZ - 0.5, degrees);
+            double[] rotatedMax = rotatePoint(maxX - 0.5, maxZ - 0.5, degrees);
 
-        // Hier berechnen wir die tatsächliche Blickrichtung der Kamera
-        // Das hängt davon ab, wie die Kamera angebracht ist (FACING)
-        // und wie sie rotiert ist (ROTATION)
-        // Beispiel-Logik (anpassen je nach Modell-Ausrichtung):
-        if (facing == Direction.UP) {
-            // An Decke: schaut nach unten + Rotation
-            return switch (rotation) {
-                case 0 -> Direction.NORTH;
-                case 1 -> Direction.EAST;
-                case 2 -> Direction.SOUTH;
-                case 3 -> Direction.WEST;
-                default -> Direction.NORTH;
-            };
-        } else if (facing == Direction.DOWN) {
-            // Am Boden: schaut nach oben + Rotation
-            return switch (rotation) {
-                case 0 -> Direction.SOUTH;
-                case 1 -> Direction.WEST;
-                case 2 -> Direction.NORTH;
-                case 3 -> Direction.EAST;
-                default -> Direction.SOUTH;
-            };
-        } else {
-            // An Wand: schaut parallel zur Wand
-            return facing;
-        }
+            // Zurück zu 0-1 Koordinaten
+            double newMinX = Math.min(rotatedMin[0], rotatedMax[0]) + 0.5;
+            double newMinZ = Math.min(rotatedMin[1], rotatedMax[1]) + 0.5;
+            double newMaxX = Math.max(rotatedMin[0], rotatedMax[0]) + 0.5;
+            double newMaxZ = Math.max(rotatedMin[1], rotatedMax[1]) + 0.5;
+
+            result[0] = Shapes.or(result[0], Shapes.box(
+                    newMinX, minY, newMinZ,
+                    newMaxX, maxY, newMaxZ
+            ));
+        });
+
+        return result[0];
+    }
+
+    @Override
+    public boolean useShapeForLightOcclusion(BlockState state) {
+        return true;
+    }
+
+    private static double[] rotatePoint(double x, double z, double degrees) {
+        double radians = Math.toRadians(degrees);
+        double cos = Math.cos(radians);
+        double sin = Math.sin(radians);
+
+        return new double[]{
+                x * cos - z * sin,  // new X
+                x * sin + z * cos   // new Z
+        };
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        return SHAPES.get(state.getValue(FACING));
     }
 }
