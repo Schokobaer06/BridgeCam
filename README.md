@@ -8,9 +8,10 @@ Designed for:
 - Remote viewing and navigation
 
 ## Features (planned)
-- Camera block
+- Simple Static Camera block
 - Monitor block with live video feed
-- Low-latency client-side rendering
+- Controllable Camera block
+- Computercraft compatbility
 - Valkyrien Skies compatibility
 
 ## Credits
